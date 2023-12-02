@@ -1,4 +1,6 @@
-﻿var reader = new StreamReader("input.txt");
+﻿using System.Diagnostics;
+
+var reader = new StreamReader("input.txt");
 
 var result = 0;
 var cCurr = 0;
@@ -33,7 +35,7 @@ while (!reader.EndOfStream)
     }
 
     cAddx = cCurr;
-    v = int.Parse(cmd.Split(' ')[1]);
+    v = int.Parse(cmd[cmd.IndexOf(' ')..]);
     busy = true;
 }
 Console.WriteLine(result);
