@@ -1,66 +1,39 @@
 ﻿var reader = new StreamReader("input.txt");
 
-var thread = new Thread();
-thread.Run();
-Console.WriteLine(thread.Signals.Sum());
-
-internal class Thread
+var result = 0;
+var cCurr = 0;
+var cAddx = 0;
+var v = 0;
+var x = 1;
+string cmd = "";
+var busy = false;
+while (!reader.EndOfStream)
 {
-    private readonly StreamReader _commands;
+    cCurr++;
 
-    private string _currCommand;
-    private bool _readNext;
-    private int _currCycle;
-    private int _x = 1;
-    private int _v;
-
-    public List<int> Signals { get; set; } = [];
-
-    public Thread()
+    if (cCurr - cAddx == 2)
     {
-        _commands = new StreamReader("input.txt");
-        _readNext = true;
+        x += v;
+        busy = false;
     }
 
-    public void Run()
+    if (!busy)
     {
-        while (!_commands.EndOfStream)
-        {
-            _currCycle++;
-
-            if ((_currCycle - 20) % 40 == 0)
-            {
-                Signals.Add(_currCycle * _x);
-            }
-
-            RunCycle();
-        }
+        cmd = reader.ReadLine();
     }
 
-    private void RunCycle()
+    if ((cCurr - 20) % 40 == 0)
     {
-        if (_readNext)
-        {
-            _currCommand = _commands.ReadLine();
-
-            if (_currCommand == "noop")
-            {
-                return;
-            }
-
-            _v = int.Parse(_currCommand.Split(' ')[1]);
-            _readNext = false;
-        }
-        else
-        {
-            _x += _v;
-            _readNext = true;
-        }
+        result += cCurr * x;
     }
+
+    if (cmd == "noop" || busy)
+    {
+        continue;
+    }
+
+    cAddx = cCurr;
+    v = int.Parse(cmd.Split(' ')[1]);
+    busy = true;
 }
-
-internal enum CycleState
-{
-    READING = 0,
-    RUNNING = 1,
-}
+Console.WriteLine(result);
